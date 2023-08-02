@@ -48,6 +48,7 @@ export default async function (
             customSiteTitle: docName,
             customCss: theme.getBuffer('dark'),
             swaggerOptions: {
+                showExtensions: true,
                 docExpansion: 'none',
                 persistAuthorization: true,
                 displayOperationId: true,

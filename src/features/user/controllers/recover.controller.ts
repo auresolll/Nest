@@ -14,7 +14,7 @@ import { User } from '../schemas/user.schema';
 import { RecoverService } from '../services/recover.service';
 import { UserService } from '../services/user.service';
 import { environments } from './../../../environments/environments';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MailerService } from '@nestjs-modules/mailer';
 
 @ApiTags('Recover')
@@ -26,7 +26,14 @@ export class RecoverController {
         private mailerService: MailerService
     ) {}
 
+    @ApiOperation({
+        summary: 'Validate recover code',
+    })
     @Get(':code')
+    @ApiParam({
+        name: 'code',
+        type: 'string',
+    })
     async validateRecoverCode(@Param('code') code: Recover['code']) {
         const recover = await this.validateCode(code);
 
@@ -35,6 +42,9 @@ export class RecoverController {
         return recover;
     }
 
+    @ApiOperation({
+        summary: 'Send recover Password to mail',
+    })
     @Post()
     async recoverPassword(@Body() body: RecoverPasswordDto) {
         const user = await this.userService.validateUserByEmail(body.email);
@@ -65,8 +75,18 @@ export class RecoverController {
             );
         }
     }
-
+    // online: false,
+    // _id: '64c9d23b57fcb444533e6bbb',
+    // isSocial: false,
+    // id: '64c9d23b57fcb444533e6bbb',
+    @ApiOperation({
+        summary: 'Change password',
+    })
     @Post(':code')
+    @ApiParam({
+        name: 'code',
+        type: 'string',
+    })
     async changePassword(
         @Param('code') code: Recover['code'],
         @Body() body: UpdatePasswordDto
