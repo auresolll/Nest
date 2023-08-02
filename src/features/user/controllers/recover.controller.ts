@@ -15,13 +15,15 @@ import { RecoverService } from '../services/recover.service';
 import { UserService } from '../services/user.service';
 import { environments } from './../../../environments/environments';
 import { ApiTags } from '@nestjs/swagger';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @ApiTags('Recover')
 @Controller('recover')
 export class RecoverController {
     constructor(
         private userService: UserService,
-        private recoverService: RecoverService
+        private recoverService: RecoverService,
+        private mailerService: MailerService
     ) {}
 
     @Get(':code')
@@ -42,10 +44,23 @@ export class RecoverController {
         const url = environments.frontEndUrl;
 
         try {
-            // Send to mail
+            const sendMail = await this.mailerService.sendMail({
+                to: user.email,
+                subject: 'Recover your password',
+                template: './recover', // This will fetch /template/recover.hbs
+                context: {
+                    name: user.username,
+                    url,
+                    code,
+                    expiration: Math.round(
+                        (expiration.getTime() - Date.now()) / 1000 / 60 / 60
+                    ),
+                },
+            });
+            return sendMail ? 1 : 0;
         } catch (e) {
             throw new HttpException(
-                `An error occurred sending email: ${e.message}`,
+                `AN ERROR OCCURRED SENDING EMAIL: ${e.message}`,
                 HttpStatus.INTERNAL_SERVER_ERROR
             );
         }

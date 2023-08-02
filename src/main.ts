@@ -27,20 +27,6 @@ async function bootstrap() {
     });
     app.enableShutdownHooks();
 
-    // app.use(
-    //     session({
-    //         store: new MongoStore({ mongoUrl: environments.mongoUri }),
-    //         secret: environments.sessionSecret,
-    //         resave: false,
-    //         saveUninitialized: false,
-    //         rolling: true,
-    //         cookie: {
-    //             maxAge: environments.recoverCodeExpiration,
-    //             httpOnly: true,
-    //         },
-    //     })
-    // );
-
     const PORT = environments.port;
     const logger = new Logger('NestApplication');
 
@@ -48,7 +34,6 @@ async function bootstrap() {
 
     await app.listen(PORT, () => {
         logger.log(`Server initialized on port ${PORT}`);
-        // process.exit(1);
     });
 }
 bootstrap();
