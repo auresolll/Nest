@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './services/auth.service';
-import { AuthController } from './controllers/auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from '../user/user.module';
-import { GoogleAuthService } from './services/google-auth.service';
+import { AuthController } from './controllers/auth.controller';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import { AuthService } from './services/auth.service';
+import { GoogleAuthService } from './services/google-auth.service';
 
 @Module({
     imports: [
@@ -15,6 +15,6 @@ import { JwtAuthGuard } from './guard/jwt-auth.guard';
     ],
     controllers: [AuthController],
     providers: [AuthService, GoogleAuthService, JwtAuthGuard],
-    exports: [JwtAuthGuard, AuthService, JwtModule, UserModule],
+    exports: [AuthService, JwtAuthGuard, JwtModule, UserModule],
 })
 export class AuthModule {}

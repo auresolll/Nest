@@ -1,11 +1,13 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
-import { User } from './../../user/schemas/user.schema';
-import { UserService } from './../../user/services/user.service';
 import { FetchMessagesDto } from '../dtos/fetch-messages.dto';
 import { MessageService } from '../services/messages.service';
+import { User } from './../../user/schemas/user.schema';
+import { UserService } from './../../user/services/user.service';
 
+@ApiTags('Message')
 @UseGuards(JwtAuthGuard)
 @Controller('message')
 export class MessageController {
@@ -19,21 +21,20 @@ export class MessageController {
         @CurrentUser() user: User,
         @Param('userId') to: string
     ) {
-        return this.messageService.getFirstDirectMessage(
-            user,
-            await this.userService.validateUserById(to)
-        );
+        const userTo = await this.userService.validateUserById(to);
+        return this.messageService.getFirstDirectMessage(user, userTo);
     }
 
     @Get('direct/:userId')
     async getDirectMessages(
         @CurrentUser() user: User,
         @Param('userId') to: string,
-        @Query() query: FetchMessagesDto
+        @Body() query: FetchMessagesDto
     ) {
+        const userTo = await this.userService.validateUserById(to);
         return this.messageService.getDirectMessages(
             user,
-            await this.userService.validateUserById(to),
+            userTo,
             query.limit,
             query.before
         );

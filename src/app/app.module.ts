@@ -8,12 +8,12 @@ import { AppController } from './controllers/app.controller';
 
 @Module({
     imports: [
+        FeaturesModule,
+        CoreModule,
         ConfigModule.forRoot({ isGlobal: true }),
         MongooseModule.forRoot(environments.mongoUri, {
             autoIndex: false,
         }),
-        FeaturesModule,
-        CoreModule,
     ],
     controllers: [AppController],
     providers: [],

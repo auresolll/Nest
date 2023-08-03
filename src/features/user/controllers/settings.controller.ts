@@ -1,20 +1,28 @@
-import { BadRequestException, Body, Controller, Put } from '@nestjs/common';
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Put,
+    UseGuards,
+} from '@nestjs/common';
 import { UpdateEmailDto } from '../dtos/update-email.dto';
 import { UpdatePasswordDto } from '../dtos/update-password.dto';
 import { User } from '../schemas/user.schema';
 import { UserService } from '../services/user.service';
 import { CurrentUser } from './../../auth/decorators/current-user.decorator';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/features/auth/guard/jwt-auth.guard';
 
 @ApiTags('Settings')
 @Controller('settings')
+@UseGuards(JwtAuthGuard)
 export class SettingsController {
     constructor(private userService: UserService) {}
 
     @Put('username')
     async updateUsername(
         @CurrentUser() user: User,
-        @Body('username') username: string
+        @Body('username') username: string,
     ) {
         const usernameUser = await this.userService.getUserByName(username);
 
@@ -43,7 +51,7 @@ export class SettingsController {
     @Put('password')
     async updatePassword(
         @CurrentUser() user: User,
-        @Body() body: UpdatePasswordDto
+        @Body() body: UpdatePasswordDto,
     ) {
         if (
             !user.isSocial &&

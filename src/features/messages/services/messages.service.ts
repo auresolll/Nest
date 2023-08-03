@@ -4,6 +4,7 @@ import { FilterQuery, Model } from 'mongoose';
 import { Message } from '../schemas/messages.schema';
 import { User } from './../../user/schemas/user.schema';
 import { UserService } from './../../user/services/user.service';
+import { ENUM_MESSAGE_TYPE } from '../constants/messages-type.enum';
 
 @Injectable()
 export class MessageService {
@@ -23,11 +24,28 @@ export class MessageService {
             ...this.getDirectMessageFilter(from, to),
             createdAt: { $lte: before },
         };
+
         if (!before) {
             delete filter.createdAt;
         }
 
         return this.getMessages(filter, limit);
+    }
+
+    async createDirectMessage(
+        from: User,
+        to: User,
+        message: string,
+        type: ENUM_MESSAGE_TYPE
+    ) {
+        const object = await this.messageModel.create({
+            from: from._id,
+            to: to._id,
+            message,
+            type,
+        });
+
+        return object.populate('from', this.userService.unpopulatedFields);
     }
 
     private async getMessages(filter: FilterQuery<Message>, limit: number) {
