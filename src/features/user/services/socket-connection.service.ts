@@ -29,6 +29,7 @@ export class SocketConnectionService {
 
             await user.save();
         }
+
         return connection.populate('user');
     }
 

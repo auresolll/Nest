@@ -37,11 +37,13 @@
         "code-config": "^1.0.37",
         "connect-mongo": "^4.6.0",
         "express-session": "^1.17.3",
+        "firebase-admin": "^11.10.1",
         "googleapis": "^123.0.0",
         "mongoose": "^7.4.1",
         "reflect-metadata": "^0.1.13",
         "rxjs": "^7.8.1",
-        "swagger-themes": "^1.2.30"
+        "swagger-themes": "^1.2.30",
+        "web-push": "^3.6.4"
     },
     "devDependencies": {
         "@nestjs/cli": "^10.0.0",
@@ -53,6 +55,7 @@
         "@types/jest": "^29.5.2",
         "@types/node": "^20.3.1",
         "@types/supertest": "^2.0.12",
+        "@types/web-push": "^3.3.2",
         "@typescript-eslint/eslint-plugin": "^5.59.11",
         "@typescript-eslint/parser": "^5.59.11",
         "eslint": "^8.42.0",
