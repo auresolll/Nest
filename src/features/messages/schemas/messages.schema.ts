@@ -2,8 +2,14 @@ import { Prop, Schema } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { createSchemaForClassWithMethods } from '../../../shared/mongoose/create-schema';
 import { ObjectId } from '../../../shared/mongoose/object-id';
-import { ENUM_MESSAGE_TYPE } from '../constants/messages-type.enum';
 import { User } from './../../user/schemas/user.schema';
+
+export enum ENUM_MESSAGE_TYPE {
+    MESSAGE = 'MESSAGE',
+    FILE_IMAGE = 'FILE_IMAGE',
+    FILE_DOC = 'FILE_DOC',
+    FILE_MEDIA = 'FILE_MEDIA',
+}
 
 @Schema()
 export class Message extends Document {

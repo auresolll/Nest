@@ -57,10 +57,9 @@ export class MessagesGateway {
         @MessageBody(new ParseObjectIdPipe()) userId: string,
         @CurrentUser() user: User,
     ) {
-        return this.userService.sendMessage(
-            await this.userService.validateUserById(userId),
-            'message:direct:typing',
-            { user: this.userService.filterUser(user) },
-        );
+        const userTo = await this.userService.validateUserById(userId);
+        return this.userService.sendMessage(userTo, 'message:direct:typing', {
+            user: this.userService.filterUser(user),
+        });
     }
 }

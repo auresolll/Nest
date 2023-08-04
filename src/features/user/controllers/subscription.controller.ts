@@ -2,6 +2,7 @@ import {
     BadRequestException,
     Body,
     Controller,
+    Delete,
     Get,
     Post,
     UseGuards,
@@ -38,6 +39,39 @@ export class SubscriptionController {
             user,
             SubscriptionType.Web,
             JSON.stringify(body),
+        );
+    }
+
+    @Post('Mobile')
+    createMobileSubscription(@Body() body: string, @CurrentUser() user: User) {
+        return this.createSubscription(
+            user,
+            SubscriptionType.Web,
+            JSON.stringify(body),
+        );
+    }
+
+    @Delete('web')
+    deleteWebSubscription(
+        @CurrentUser() user: User,
+        @Body('subscription') body: PushSubscriptionJSON,
+    ) {
+        return this.subscriptionService.delete(
+            user,
+            SubscriptionType.Web,
+            JSON.stringify(body),
+        );
+    }
+
+    @Delete('mobile')
+    deleteMobileSubscription(
+        @CurrentUser() user: User,
+        @Body('subscription') body: string,
+    ) {
+        return this.subscriptionService.delete(
+            user,
+            SubscriptionType.Web,
+            body,
         );
     }
 

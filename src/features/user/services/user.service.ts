@@ -103,7 +103,6 @@ export class UserService {
 
     async unsubscribeSocket(socket: Socket, user: User) {
         await this.socketConnectionService.delete(socket);
-
         return socket.leave(`user_${user._id}`);
     }
 

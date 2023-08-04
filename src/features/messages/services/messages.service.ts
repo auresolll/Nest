@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { Message } from '../schemas/messages.schema';
+import { ENUM_MESSAGE_TYPE, Message } from '../schemas/messages.schema';
 import { User } from './../../user/schemas/user.schema';
 import { UserService } from './../../user/services/user.service';
-import { ENUM_MESSAGE_TYPE } from '../constants/messages-type.enum';
 
 @Injectable()
 export class MessageService {
     constructor(
         @InjectModel(Message.name) private messageModel: Model<Message>,
-        private userService: UserService
+        private userService: UserService,
     ) {}
 
     async getFirstDirectMessage(from: User, to: User) {
@@ -19,7 +18,12 @@ export class MessageService {
             .populate('from', this.userService.unpopulatedFields);
     }
 
-    async getDirectMessages(from: User, to: User, limit = 30, before?: Date) {
+    async getDirectMessages(
+        from: User,
+        to: User,
+        limit = 30,
+        before?: Date,
+    ): Promise<Message[]> {
         const filter: FilterQuery<Message> = {
             ...this.getDirectMessageFilter(from, to),
             createdAt: { $lte: before },
@@ -36,7 +40,7 @@ export class MessageService {
         from: User,
         to: User,
         message: string,
-        type: ENUM_MESSAGE_TYPE
+        type: ENUM_MESSAGE_TYPE,
     ) {
         const object = await this.messageModel.create({
             from: from._id,
@@ -48,7 +52,10 @@ export class MessageService {
         return object.populate('from', this.userService.unpopulatedFields);
     }
 
-    private async getMessages(filter: FilterQuery<Message>, limit: number) {
+    private async getMessages(
+        filter: FilterQuery<Message>,
+        limit: number,
+    ): Promise<Message[]> {
         const messages = await this.messageModel
             .find(filter)
             .limit(limit)
@@ -57,9 +64,9 @@ export class MessageService {
         return this.sortMessages(messages);
     }
 
-    sortMessages(messages: Message[]) {
+    sortMessages(messages: Message[]): Message[] {
         return messages.sort(
-            (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+            (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
         );
     }
 

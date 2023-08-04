@@ -1,6 +1,0 @@
-export enum ENUM_MESSAGE_TYPE {
-    MESSAGE = 'MESSAGE',
-    FILE_IMAGE = 'FILE_IMAGE',
-    FILE_DOC = 'FILE_DOC',
-    FILE_MEDIA = 'FILE_MEDIA',
-}

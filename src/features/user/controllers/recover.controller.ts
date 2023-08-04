@@ -23,7 +23,7 @@ export class RecoverController {
     constructor(
         private userService: UserService,
         private recoverService: RecoverService,
-        private mailerService: MailerService
+        private mailerService: MailerService,
     ) {}
 
     @ApiOperation({
@@ -63,7 +63,7 @@ export class RecoverController {
                     url,
                     code,
                     expiration: Math.round(
-                        (expiration.getTime() - Date.now()) / 1000 / 60 / 60
+                        (expiration.getTime() - Date.now()) / 1000 / 60 / 60,
                     ),
                 },
             });
@@ -71,14 +71,11 @@ export class RecoverController {
         } catch (e) {
             throw new HttpException(
                 `AN ERROR OCCURRED SENDING EMAIL: ${e.message}`,
-                HttpStatus.INTERNAL_SERVER_ERROR
+                HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }
     }
-    // online: false,
-    // _id: '64c9d23b57fcb444533e6bbb',
-    // isSocial: false,
-    // id: '64c9d23b57fcb444533e6bbb',
+
     @ApiOperation({
         summary: 'Change password',
     })
@@ -89,14 +86,14 @@ export class RecoverController {
     })
     async changePassword(
         @Param('code') code: Recover['code'],
-        @Body() body: UpdatePasswordDto
+        @Body() body: UpdatePasswordDto,
     ) {
         const recover = await this.validateCode(code);
 
         if (body.password !== body.confirmPassword) {
             throw new HttpException(
                 'RECOVER.PASSWORD DOES NOT MATCH',
-                HttpStatus.BAD_REQUEST
+                HttpStatus.BAD_REQUEST,
             );
         }
 
@@ -105,7 +102,7 @@ export class RecoverController {
         if (await user.validatePassword(body.password)) {
             throw new HttpException(
                 'RECOVER.DO NOT USE YOUR CURRENT PASSWORD',
-                HttpStatus.BAD_REQUEST
+                HttpStatus.BAD_REQUEST,
             );
         }
 
@@ -122,7 +119,7 @@ export class RecoverController {
         if (!recover)
             throw new HttpException(
                 'RECOVER.CODE.NOT_FOUND',
-                HttpStatus.NOT_FOUND
+                HttpStatus.NOT_FOUND,
             );
 
         if (recover.expiration?.getTime() < Date.now()) {
@@ -130,7 +127,7 @@ export class RecoverController {
 
             throw new HttpException(
                 'RECOVER.CODE.HAS_EXPIRED',
-                HttpStatus.NOT_FOUND
+                HttpStatus.NOT_FOUND,
             );
         }
 
